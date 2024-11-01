@@ -1,7 +1,6 @@
 import React, { useState } from "react";
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { TextInput } from "react-native-gesture-handler";
-import Loading from "@/components/Loading";
+import { StyleSheet, Text, View } from "react-native";
+import { Loading, CustomTextInput, CustomButton } from "../utils/";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
@@ -36,49 +35,36 @@ const LoginPage: React.FC<Props> = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <Text>Welcome {result}</Text>
-      <Text>Email</Text>
-      <TextInput
-        keyboardType="email-address"
-        style={styles.textInputStyle}
-        placeholder="Enter Your Email"
-        placeholderTextColor="black"
-        onChangeText={(value) => setEmail(value)}
-        value={email}
-      />
-      <Text>Password</Text>
-      <TextInput
-        keyboardType="default"
-        style={styles.textInputStyle}
-        secureTextEntry={true}
-        placeholder="Enter Your Password"
-        placeholderTextColor="black"
-        onChangeText={(value) => setPassword(value)}
-        value={password}
-      />
-      <Pressable
-        onPress={handleSubmit}
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed ? "gray" : "blue",
-          },
-          styles.buttonStyle,
-        ]}
-      >
-        <Text style={styles.loginButtonText}>Login</Text>
-      </Pressable>
+      <Text style={styles.login}>Welcome {result}</Text>
 
-      <Pressable
-        onPress={() => navigation.navigate("SignUp")}
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed ? "gray" : "lightgray",
-          },
-          styles.signUpButton,
-        ]}
-      >
-        <Text style={styles.signUpButtonText}>Sign Up</Text>
-      </Pressable>
+      <CustomTextInput
+        title="Email"
+        isSecureText={false}
+        handleOnChangeText={setEmail}
+        handleValue={email}
+        handlePlaceholder="Enter Your Email"
+      />
+
+      <CustomTextInput
+        title="Password"
+        isSecureText={true}
+        handleOnChangeText={setPassword}
+        handleValue={password}
+        handlePlaceholder="Enter Your Password"
+      />
+      <CustomButton
+        title="Login"
+        handleOnPress={() => navigation.navigate("Login")}
+        buttonColor="blue"
+        pressedButtonColor="gray"
+      />
+      <CustomButton
+        title="Sign Up"
+        handleOnPress={() => navigation.navigate("SignUp")}
+        buttonColor="gray"
+        pressedButtonColor="lightgray"
+      />
+
       {isLoading ? <Loading /> : null}
     </View>
   );
@@ -93,37 +79,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  textInputStyle: {
-    borderWidth: 1,
-    width: "80%",
-    height: 50,
-    borderRadius: 10,
-    marginVertical: 10,
-    textAlign: "center",
-  },
-  buttonStyle: {
-    borderWidth: 1,
-    width: "80%",
-    height: 50,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  loginButtonText: {
+  login: {
     fontWeight: "bold",
-    color: "white",
-  },
-  signUpButtonText: {
-    fontWeight: "bold",
-    color: "black",
-  },
-  signUpButton: {
-    borderWidth: 1,
-    width: "80%",
-    height: 50,
-    borderRadius: 10,
-    alignItems: "center",
-    justifyContent: "center",
-    marginTop: 20,
+    fontSize: 30,
+    marginBottom: 30,
   },
 });
