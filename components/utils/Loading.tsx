@@ -1,9 +1,20 @@
-import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  Pressable,
+} from "react-native";
 import React from "react";
-
-const Loading = () => {
+interface LoadingProps {
+  changeIsLoading: () => void;
+}
+const Loading: React.FC<LoadingProps> = ({ changeIsLoading }) => {
   return (
     <View style={styles.container}>
+      <Pressable onPress={() => changeIsLoading()}>
+        <Text>X</Text>
+      </Pressable>
       <ActivityIndicator size={"large"} color={"blue"} />
       <Text style={styles.loginText}>Loading...</Text>
     </View>

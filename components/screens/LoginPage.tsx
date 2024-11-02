@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Loading, CustomTextInput, CustomButton } from "../utils/";
-
+import { useSelector, useDispatch } from "react-redux";
+import { setIsLoading } from "@/redux/userSlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-
+import { login } from "@/redux/userSlice";
+import type { RootState } from "@/redux/store";
+import { AppDispatch } from "@/redux/store";
 type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
@@ -22,25 +25,18 @@ interface Props {
 const LoginPage: React.FC<Props> = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [result, setResult] = useState();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading } = useSelector((state: RootState) => state.user);
 
-  const handleSubmit = () => {
-    setIsLoading(true);
-    setResult(`${email} ${password}`);
+  const dispatch = useDispatch<AppDispatch>();
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-  };
   return (
     <View style={styles.container}>
-      <Text style={styles.login}>Welcome {result}</Text>
+      <Text style={styles.login}>Welcome</Text>
 
       <CustomTextInput
         title="Email"
         isSecureText={false}
-        handleOnChangeText={setEmail}
+        handleOnChangeText={(text) => setEmail(text)}
         handleValue={email}
         handlePlaceholder="Enter Your Email"
       />
@@ -48,13 +44,13 @@ const LoginPage: React.FC<Props> = ({ navigation }) => {
       <CustomTextInput
         title="Password"
         isSecureText={true}
-        handleOnChangeText={setPassword}
+        handleOnChangeText={(password) => setPassword(password)}
         handleValue={password}
         handlePlaceholder="Enter Your Password"
       />
       <CustomButton
         title="Login"
-        handleOnPress={() => navigation.navigate("Login")}
+        handleOnPress={() => dispatch(login({ email, password }))}
         buttonColor="blue"
         pressedButtonColor="gray"
       />
@@ -65,7 +61,9 @@ const LoginPage: React.FC<Props> = ({ navigation }) => {
         pressedButtonColor="lightgray"
       />
 
-      {isLoading ? <Loading /> : null}
+      {isLoading ? (
+        <Loading changeIsLoading={() => dispatch(setIsLoading(false))} />
+      ) : null}
     </View>
   );
 };
