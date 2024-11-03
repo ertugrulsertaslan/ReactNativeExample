@@ -6,6 +6,7 @@ import {
   getDocs,
   doc,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { DocumentData } from "firebase/firestore";
@@ -35,6 +36,14 @@ const HomePage = () => {
   const deleteData = async () => {
     await deleteDoc(doc(db, "dataName", "id"));
   };
+  const updateData = async () => {
+    try {
+      const lessonData = doc(db, "collectionName", "id");
+      await updateDoc(lessonData, {
+        lesson: 90,
+      });
+    } catch (error) {}
+  };
   return (
     <View style={styles.container}>
       <Text>HomePage</Text>
@@ -55,6 +64,12 @@ const HomePage = () => {
         buttonColor="blue"
         pressedButtonColor="gray"
         handleOnPress={deleteData}
+      />
+      <CustomButton
+        title="Update Data"
+        buttonColor="blue"
+        pressedButtonColor="gray"
+        handleOnPress={updateData}
       />
     </View>
   );
