@@ -1,6 +1,12 @@
 import { StyleSheet, Text, View } from "react-native";
 import React, { useState } from "react";
-import { collection, addDoc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { DocumentData } from "firebase/firestore";
 import { CustomButton } from "../utils";
@@ -23,8 +29,11 @@ const HomePage = () => {
     const querySnapshot = await getDocs(collection(db, "reactNativeLesson"));
     querySnapshot.forEach((doc) => {
       const docsArray = querySnapshot.docs.map((doc) => doc.data());
-      setData(docsArray);
+      setData([...data, docsArray]);
     });
+  };
+  const deleteData = async () => {
+    await deleteDoc(doc(db, "dataName", "id"));
   };
   return (
     <View style={styles.container}>
@@ -40,6 +49,12 @@ const HomePage = () => {
         buttonColor="blue"
         pressedButtonColor="gray"
         handleOnPress={getData}
+      />
+      <CustomButton
+        title="Delete Data"
+        buttonColor="blue"
+        pressedButtonColor="gray"
+        handleOnPress={deleteData}
       />
     </View>
   );
