@@ -12,9 +12,7 @@ interface LoadingProps {
 const Loading: React.FC<LoadingProps> = ({ changeIsLoading }) => {
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => changeIsLoading()}>
-        <Text>X</Text>
-      </Pressable>
+      <Pressable onPress={() => changeIsLoading()}></Pressable>
       <ActivityIndicator size={"large"} color={"blue"} />
       <Text style={styles.loginText}>Loading...</Text>
     </View>
