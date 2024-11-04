@@ -3,6 +3,7 @@ import React from "react";
 
 interface CustomButtonProps {
   title: string;
+  flexValue: number;
   handleOnPress: () => void;
   buttonColor: string;
   pressedButtonColor: string;
@@ -10,6 +11,7 @@ interface CustomButtonProps {
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   title,
+  flexValue,
   handleOnPress,
   buttonColor,
   pressedButtonColor,
@@ -20,6 +22,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
       style={({ pressed }) => [
         {
           backgroundColor: pressed ? pressedButtonColor : buttonColor,
+          flex: flexValue,
         },
         styles.button,
       ]}
@@ -39,7 +42,6 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    margin: 20,
   },
   buttonText: {
     fontWeight: "bold",

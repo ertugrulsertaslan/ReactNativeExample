@@ -1,7 +1,7 @@
 import { StyleSheet, Text, View, SafeAreaView, Pressable } from "react-native";
 import React, { useState } from "react";
 import { CustomTextInput, CustomButton, Loading } from "../utils";
-import { useDispatch, UseDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { register } from "@/redux/userSlice";
 
 const SignUpPage = ({ navigation }) => {
