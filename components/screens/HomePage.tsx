@@ -1,4 +1,12 @@
-import { Pressable, StyleSheet, Text, View, TextInput } from "react-native";
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  FlatList,
+  SafeAreaView,
+} from "react-native";
 import React, { useState, useEffect } from "react";
 import {
   collection,
@@ -13,6 +21,7 @@ import { DocumentData } from "firebase/firestore";
 import { CustomButton } from "../utils";
 import { useDispatch } from "react-redux";
 import { logout } from "@/redux/userSlice";
+import Animated, { BounceIn } from "react-native-reanimated";
 
 const HomePage = () => {
   const [data, setData] = useState<DocumentData[]>([]);
@@ -69,8 +78,30 @@ const HomePage = () => {
   const handleLogout = () => {
     dispatch(logout());
   };
+
+  const renderItem = ({ item, index }) => {
+    return (
+      <Animated.View
+        entering={BounceIn.delay(100 * index + 1)}
+        style={styles.flatlistContainer}
+      >
+        <Pressable
+          onPress={() => [
+            updateData(item.id),
+            setIsSaved(isSaved === false ? true : false),
+          ]}
+          key={item.id}
+        >
+          <Text>{item?.id}</Text>
+          <Text>{item.title}</Text>
+          <Text>{item.content}</Text>
+        </Pressable>
+      </Animated.View>
+    );
+  };
+
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Text>HomePage</Text>
       <TextInput
         value={updateTheData}
@@ -85,23 +116,12 @@ const HomePage = () => {
         }}
       />
 
-      {data.map((value) => {
-        return (
-          <Pressable
-            onPress={() => [
-              updateData(value.id),
-              setIsSaved(isSaved === false ? true : false),
-            ]}
-            key={value.id}
-          >
-            <Text>{value?.id}</Text>
-            <Text>{value.title}</Text>
-            <Text>{value.content}</Text>
-            <Text>{value.lesson}</Text>
-          </Pressable>
-        );
-      })}
-
+      <FlatList
+        style={styles.flatlist}
+        data={data}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+      />
       <CustomButton
         title="Save"
         buttonColor="blue"
@@ -133,7 +153,7 @@ const HomePage = () => {
         pressedButtonColor="gray"
         handleOnPress={handleLogout}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -145,5 +165,15 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
+  },
+  flatlistContainer: {
+    marginVertical: 5,
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  flatlist: {
+    width: "90%",
+    padding: 10,
   },
 });
