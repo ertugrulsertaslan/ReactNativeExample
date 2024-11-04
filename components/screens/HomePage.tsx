@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useState } from "react";
+import { Pressable, StyleSheet, Text, View, TextInput } from "react-native";
+import React, { useState, useEffect } from "react";
 import {
   collection,
   addDoc,
@@ -13,7 +13,11 @@ import { DocumentData } from "firebase/firestore";
 import { CustomButton } from "../utils";
 const HomePage = () => {
   const [data, setData] = useState<DocumentData[]>([]);
-  console.log("data", data);
+  const [updateTheData, setUpdateTheData] = useState();
+  const [isSaved, setIsSaved] = useState(false);
+  useEffect(() => {
+    getData();
+  }, [isSaved]);
   const sendData = async () => {
     try {
       const docRef = await addDoc(collection(db, "reactNativeLesson"), {
@@ -27,26 +31,65 @@ const HomePage = () => {
     }
   };
   const getData = async () => {
-    const querySnapshot = await getDocs(collection(db, "reactNativeLesson"));
-    querySnapshot.forEach((doc) => {
-      const docsArray = querySnapshot.docs.map((doc) => doc.data());
-      setData([...data, docsArray]);
-    });
-  };
-  const deleteData = async () => {
-    await deleteDoc(doc(db, "dataName", "id"));
-  };
-  const updateData = async () => {
+    const allData = [];
     try {
-      const lessonData = doc(db, "collectionName", "id");
-      await updateDoc(lessonData, {
-        lesson: 90,
+      const querySnapshot = await getDocs(collection(db, "reactNativeLesson"));
+      querySnapshot.forEach((doc) => {
+        allData.push({ ...doc.data(), id: doc.id });
       });
+      setData(allData);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const deleteData = async (value) => {
+    try {
+      await deleteDoc(doc(db, "reactNativeLesson", value));
     } catch (error) {}
+  };
+  const updateData = async (value) => {
+    try {
+      const lessonData = doc(db, "reactNativeLesson", value);
+      await updateDoc(lessonData, {
+        content: updateTheData || "",
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
   return (
     <View style={styles.container}>
       <Text>HomePage</Text>
+      <TextInput
+        value={updateTheData}
+        onChangeText={setUpdateTheData}
+        placeholder="enter your data"
+        style={{
+          borderWidth: 1,
+          width: "50%",
+          paddingVertical: 10,
+          textAlign: "center",
+          marginBottom: 10,
+        }}
+      />
+
+      {data.map((value) => {
+        return (
+          <Pressable
+            onPress={() => [
+              updateData(value.id),
+              setIsSaved(isSaved === false ? true : false),
+            ]}
+            key={value.id}
+          >
+            <Text>{value?.id}</Text>
+            <Text>{value.title}</Text>
+            <Text>{value.content}</Text>
+            <Text>{value.lesson}</Text>
+          </Pressable>
+        );
+      })}
+
       <CustomButton
         title="Save"
         buttonColor="blue"
