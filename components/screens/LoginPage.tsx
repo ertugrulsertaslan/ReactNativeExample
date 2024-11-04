@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Loading, CustomTextInput, CustomButton } from "../utils/";
 import { useSelector, useDispatch } from "react-redux";
 import { setIsLoading } from "@/redux/userSlice";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { login } from "@/redux/userSlice";
+import { login, autoLogin } from "@/redux/userSlice";
 import type { RootState } from "@/redux/store";
 import { AppDispatch } from "@/redux/store";
+
 type RootStackParamList = {
   Login: undefined;
   SignUp: undefined;
@@ -29,6 +30,9 @@ const LoginPage: React.FC<Props> = ({ navigation }) => {
 
   const dispatch = useDispatch<AppDispatch>();
 
+  useEffect(() => {
+    dispatch(autoLogin());
+  }, []);
   return (
     <View style={styles.container}>
       <Text style={styles.login}>Welcome</Text>

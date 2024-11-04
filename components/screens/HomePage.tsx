@@ -11,13 +11,19 @@ import {
 import { db } from "@/firebaseConfig";
 import { DocumentData } from "firebase/firestore";
 import { CustomButton } from "../utils";
+import { useDispatch } from "react-redux";
+import { logout } from "@/redux/userSlice";
+
 const HomePage = () => {
   const [data, setData] = useState<DocumentData[]>([]);
   const [updateTheData, setUpdateTheData] = useState();
   const [isSaved, setIsSaved] = useState(false);
+  const dispatch = useDispatch();
+
   useEffect(() => {
     getData();
   }, [isSaved]);
+
   const sendData = async () => {
     try {
       const docRef = await addDoc(collection(db, "reactNativeLesson"), {
@@ -25,11 +31,11 @@ const HomePage = () => {
         content: "React Native tutorial for beginner",
         lesson: 95,
       });
-      console.log("Document written with ID:", docRef.id);
     } catch (e) {
       console.error("Error adding document", e);
     }
   };
+
   const getData = async () => {
     const allData = [];
     try {
@@ -42,11 +48,13 @@ const HomePage = () => {
       console.log(error);
     }
   };
+
   const deleteData = async (value) => {
     try {
       await deleteDoc(doc(db, "reactNativeLesson", value));
     } catch (error) {}
   };
+
   const updateData = async (value) => {
     try {
       const lessonData = doc(db, "reactNativeLesson", value);
@@ -56,6 +64,10 @@ const HomePage = () => {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
   };
   return (
     <View style={styles.container}>
@@ -113,6 +125,13 @@ const HomePage = () => {
         buttonColor="blue"
         pressedButtonColor="gray"
         handleOnPress={updateData}
+      />
+
+      <CustomButton
+        title="Logout"
+        buttonColor="red"
+        pressedButtonColor="gray"
+        handleOnPress={handleLogout}
       />
     </View>
   );
