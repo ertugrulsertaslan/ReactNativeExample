@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: "100%",
-    backgroundColor: "tomato",
+
     alignItems: "center",
     justifyContent: "center",
   },
@@ -35,6 +35,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     fontSize: 16,
     marginTop: 20,
-    color: "white",
   },
 });
