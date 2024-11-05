@@ -17,7 +17,7 @@ import { CustomButton } from "../utils";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserInput, saveData } from "@/redux/dataSlice";
 
-const HomePage = () => {
+const HomePage = ({ navigation }) => {
   const { data, userInput } = useSelector((state) => state.data);
 
   const dispatch = useDispatch();
@@ -72,6 +72,9 @@ const HomePage = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>To Do List</Text>
+      <Pressable onPress={() => navigation.navigate("Profile")}>
+        <Text style={styles.userProfileTitle}>User Profile</Text>
+      </Pressable>
 
       <FlatList
         style={styles.flatlist}
@@ -149,5 +152,11 @@ const styles = StyleSheet.create({
     marginRight: 5,
     borderWidth: 1,
     borderRadius: 5,
+  },
+  userProfileTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    padding: 10,
+    borderWidth: 0.5,
   },
 });
