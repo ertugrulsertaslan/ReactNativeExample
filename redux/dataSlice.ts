@@ -1,13 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  collection,
-  addDoc,
-  getDocs,
-  doc,
-  deleteDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, addDoc, getDocs, doc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 
 export const getAllData = createAsyncThunk("data/getData", async () => {
@@ -26,8 +19,9 @@ export const getAllData = createAsyncThunk("data/getData", async () => {
 
 export const saveData = createAsyncThunk("data/saveData", async (value) => {
   try {
-    const docRef = await addDoc(collection(db, "todolist"), {
+    await addDoc(collection(db, "todolist"), {
       content: value,
+      completed: false,
     });
   } catch (e) {
     console.error("Error adding document", e);

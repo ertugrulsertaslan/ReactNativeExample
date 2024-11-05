@@ -1,5 +1,6 @@
 import Animated, { BounceIn } from "react-native-reanimated";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
 import Entypo from "@expo/vector-icons/Entypo";
 import {
   Pressable,
@@ -11,11 +12,11 @@ import {
   SafeAreaView,
 } from "react-native";
 import React from "react";
-import { doc, deleteDoc } from "firebase/firestore";
+import { doc, deleteDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebaseConfig";
 import { CustomButton } from "../utils";
 import { useDispatch, useSelector } from "react-redux";
-import { setUserInput, saveData } from "@/redux/dataSlice";
+import { setUserInput, saveData, getAllData } from "@/redux/dataSlice";
 
 const HomePage = ({ navigation }) => {
   const { data, userInput } = useSelector((state) => state.data);
@@ -24,24 +25,22 @@ const HomePage = ({ navigation }) => {
 
   const deleteData = async (value) => {
     try {
-      await deleteDoc(doc(db, "reactNativeLesson", value));
+      await deleteDoc(doc(db, "todolist", value));
+      dispatch(getAllData());
     } catch (error) {}
   };
-  /*
-  const updateData = async (value) => {
+
+  const updateData = async (id, currentStatus) => {
     try {
-      const lessonData = doc(db, "reactNativeLesson", value);
-      await updateDoc(lessonData, {
-        content: updateTheData || "",
+      const completed = doc(db, "todolist", id);
+      await updateDoc(completed, {
+        completed: !currentStatus,
       });
+      dispatch(getAllData());
     } catch (error) {
       console.log(error);
     }
   };
-   const handleLogout = () => {
-    dispatch(logout());
-  };
-*/
 
   const handleTextInput = (text) => {
     dispatch(setUserInput(text));
@@ -54,17 +53,28 @@ const HomePage = ({ navigation }) => {
         style={styles.flatlistContainer}
       >
         <Pressable
-          onPress={() => deleteData(item.id)}
+          onPress={() => updateData(item.id, item.completed)}
           style={styles.iconContainer}
         >
-          <AntDesign name="checkcircleo" size={24} color="black" />
-          <Entypo name="circle" size={24} color="black" />
+          {item.completed ? (
+            <AntDesign name="checkcircleo" size={24} color="black" />
+          ) : (
+            <Entypo name="circle" size={24} color="black" />
+          )}
         </Pressable>
 
         <View style={styles.itemContainer}>
           <Text style={styles.itemTitle}>{item.title}</Text>
           <Text>{item.content}</Text>
         </View>
+        <Pressable onPress={() => deleteData(item.id)}>
+          <FontAwesome
+            name="trash-o"
+            size={24}
+            style={{ marginRight: 10 }}
+            color="black"
+          />
+        </Pressable>
       </Animated.View>
     );
   };
@@ -143,6 +153,7 @@ const styles = StyleSheet.create({
   userInputContainer: {
     width: "90%",
     flexDirection: "row",
+
     marginBottom: 20,
   },
   textInput: {
@@ -152,6 +163,8 @@ const styles = StyleSheet.create({
     marginRight: 5,
     borderWidth: 1,
     borderRadius: 5,
+    height: 50,
+    marginTop: 5,
   },
   userProfileTitle: {
     fontSize: 14,
